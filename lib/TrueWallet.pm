@@ -7,6 +7,12 @@ use HTTP::Tiny;
 use Data::Dumper;
 my $http = HTTP::Tiny->new;
 
+BEGIN {
+   our @ISA = qw( Exporter );
+   our @EXPORT_OK = qw(getToken getProfile getBalance getActivity topupTW txDetail logout);
+   require Exporter;
+}
+
 sub getToken {
 	my ($user, $pass) = @_;
 	my %body = (username => "$user", password => sha1_hex($user.$pass), type => 'email');
