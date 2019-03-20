@@ -10,12 +10,12 @@ use Data::Dumper;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our %EXPORT_TAGS = ( 'all' => [ qw(getToken getProfile getBalance getActivity topupTW txDetail logout) ] );
+our %EXPORT_TAGS = ( 'all' => [ qw(Login get_Profile get_Balance get_Activity topup_CashCard get_TxDetail Logout) ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our $VERSION = '0.01';
+our $http = HTTP::Tiny->new;
 
-my $http = HTTP::Tiny->new;
-sub getToken {
+sub Login {
 	my ($user, $pass) = @_;
 	my %body = (username => "$user", password => sha1_hex($user.$pass), type => 'email');
 	my $response = $http->request( 'POST', 'https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/signin', {
@@ -34,26 +34,7 @@ sub getToken {
 	}
 }
 
-sub getToken {
-	my ($user, $pass) = @_;
-	my %body = (username => "$user", password => sha1_hex($user.$pass), type => 'email');
-	my $response = $http->request( 'POST', 'https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/signin', {
-			Host => 'mobile-api-gateway.truemoney.com',
-			headers => {
-				'content-type' => 'application/json'
-			},
-			content => encode_json \%body
-		}
-	);
-	if ($response->{success}) {
-		my $tokenjson = decode_json($response->{content});
-		return $tokenjson->{'data'}->{'accessToken'};		
-	} else {
-		print "Cannot get Token from Truewallet !\n";
-	}
-}
-
-sub getProfile {
+sub get_Profile {
 	my ($token) = @_;
 	my $response = $http->request( 'GET', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/profile/$token", {
 			Host => 'mobile-api-gateway.truemoney.com'
@@ -67,7 +48,7 @@ sub getProfile {
 	}
 }
 
-sub getBalance {
+sub get_Balance {
 	my ($token) = @_;
 	my $response = $http->request( 'GET', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/profile/balance/$token", {
 			Host => 'mobile-api-gateway.truemoney.com'
@@ -80,7 +61,7 @@ sub getBalance {
 		print "Cannot get Balance from Truewallet !\n";
 	}
 }
-sub getActivity {
+sub get_Activity {
 	my ($token,$start,$end) = @_;
 	my $limit = 25;
 	my $response = $http->request( 'GET', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/user-profile-composite/v1/users/transactions/history?start_date=$start&end_date=$end&limit=$limit", {
@@ -101,7 +82,7 @@ sub getActivity {
 }
 
 #NEED TO BE TEST 
-sub topupTW {
+sub topup_CashCard {
 	my ($token, $cashcard) = @_;
 	my $time = time;
 	my $response = $http->request( 'POST', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/topup/mobile/$time/$token/cashcard/$cashcard", {
@@ -118,7 +99,7 @@ sub topupTW {
 	}
 }
 
-sub txDetail {
+sub get_TxDetail {
 	my ($token, $id) = @_;
 	my $time = time;
 	my $response = $http->request( 'GET', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/user-profile-composite/v1/users/transactions/history/detail/$id", {
@@ -136,7 +117,7 @@ sub txDetail {
 
 }
 
-sub logout {
+sub Logout {
 	my ($token) = @_;
 	my $response = $http->request( 'POST', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/signout/$token", {
 			Host => 'mobile-api-gateway.truemoney.com'
@@ -149,54 +130,3 @@ sub logout {
 	}	
 }
 1;
-__END__
-# Below is stub documentation for your module. You'd better edit it!
-
-=head1 NAME
-
-TrueWallet::Api - Perl extension for blah blah blah
-
-=head1 SYNOPSIS
-
-  use TrueWallet::Api;
-  blah blah blah
-
-=head1 DESCRIPTION
-
-Stub documentation for TrueWallet::Api, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
-
-Blah blah blah.
-
-=head2 EXPORT
-
-None by default.
-
-
-
-=head1 SEE ALSO
-
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
-
-=head1 AUTHOR
-
-A. U. Thor, E<lt>a.u.thor@a.galaxy.far.far.awayE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2019 by A. U. Thor
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.28.1 or,
-at your option, any later version of Perl 5 you may have available.
-
-
-=cut
