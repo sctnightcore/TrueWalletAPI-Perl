@@ -8,15 +8,15 @@ sub Main {
 	# login to TrueWallet
 	my $email = '';
 	my $password = '';
-	my $token = getToken($email, $password);
+	my $token = Login($email, $password);
 	if (defined $token) {
 		# check Balance 
-		my $balance = getBalance($token);
+		my $balance = get_Balance($token);
 		print "You have balance is $balance\n";
 		# check Activity [Start - end] // check all Report id 
-		my $activity = getActivity($token,'2018-12-28','2019-01-02'); #start , end [YYYY-MM-DD] 
+		my $activity = get_Activity($token,'2018-12-28','2019-01-02'); #start , end [YYYY-MM-DD] 
 		foreach my $i ( @$activity ) {
-   			my $txdetail = txDetail($token, $i->{report_id});
+   			my $txdetail = get_TxDetail($token, $i->{report_id});
 			print "======================================\n";
 			printf "Report ID: %s\n", $i->{report_id};
 		    printf "Date: %s\n", $i->{date_time};
@@ -26,7 +26,7 @@ sub Main {
 		    print "======================================\n";
 		}
 		#logout from TrueWallet
-		my $logout = logout($token);
+		my $logout = Logout($token);
 	} else {
 		print "Cannot get token from truewallet\n";
 	}
