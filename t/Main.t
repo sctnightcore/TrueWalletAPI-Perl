@@ -1,9 +1,7 @@
 use strict;
 use warnings;
-use FindBin qw( $RealBin );
-use lib "$RealBin/lib";
 use Data::Dumper;
-use TrueWallet qw(getToken getProfile getBalance getActivity topupTW txDetail logout);
+use TrueWallet::Api qw/:all/;
 
 Main();
 sub Main {
@@ -33,4 +31,3 @@ sub Main {
 		print "Cannot get token from truewallet\n";
 	}
 }
-
