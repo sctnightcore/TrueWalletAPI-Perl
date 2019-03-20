@@ -8,7 +8,7 @@ use TrueWallet qw(getToken getProfile getBalance getActivity topupTW txDetail lo
 Main();
 sub Main {
 	# login to TrueWallet
-	my $token = getToken('nightcoremax@gmail.com', '0996460988a');
+	my $token = getToken('username', 'password');
 	if (defined $token) {
 		# check Balance 
 		my $balance = getBalance($token);
