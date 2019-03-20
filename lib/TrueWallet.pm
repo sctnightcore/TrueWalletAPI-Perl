@@ -1,6 +1,7 @@
+package TrueWallet;
 use strict;
 use warnings;
-use JSON::PP;
+use JSON::XS qw( decode_json encode_json);
 use Digest::SHA1 qw(sha1 sha1_hex sha1_base64);
 use HTTP::Tiny;
 use Data::Dumper;
@@ -39,6 +40,19 @@ sub getProfile {
 	}
 }
 
+sub getBalance {
+	my ($token) = @_;
+	my $response = $http->request( 'GET', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/profile/balance/$token", {
+			Host => 'mobile-api-gateway.truemoney.com'
+	});
+
+	if ($response->{success}) {
+		my $balancejson = decode_json($response->{content});
+		return $balancejson->{'data'}->{'currentBalance'};
+	} else {
+		print "Cannot get Balance from Truewallet !\n";
+	}
+}
 sub getActivity {
 	my ($token,$start,$end) = @_;
 	my $limit = 25;
@@ -59,9 +73,41 @@ sub getActivity {
 
 }
 
+#NEED TO BE TEST 
+sub topupTW {
+	my ($token, $cashcard) = @_;
+	my $time = time;
+	my $response = $http->request( 'POST', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/topup/mobile/$time/$token/cashcard/$cashcard", {
+			Host => 'mobile-api-gateway.truemoney.com',
+			headers => {
+				'Authorization' => $token
+			}
+	});
+	if ($response->{success}) {
+		my $topuptwjson = decode_json($response->{content});
+		return $topuptwjson->{'data'};
+	} else {
+		print "Cannot use topup in Truewallet !\n";
+	}
+}
 
+sub txDetail {
+	my ($token, $id) = @_;
+	my $time = time;
+	my $response = $http->request( 'GET', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/user-profile-composite/v1/users/transactions/history/detail/$id", {
+			Host => 'mobile-api-gateway.truemoney.com',
+			headers => {
+				'Authorization' => $token
+			}
+	});
+	if ($response->{success}) {
+		my $txdetailjson = decode_json($response->{content});
+		return $txdetailjson->{'data'};
+	} else {
+		print "Cannot Get txdetail from Truewallet !\n";
+	}	
 
-
+}
 sub logout {
 	my ($token) = @_;
 	my $response = $http->request( 'POST', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/signout/$token", {
@@ -74,3 +120,5 @@ sub logout {
 		print "Cannot Logout Truewallet !\n";
 	}	
 }
+
+1;
