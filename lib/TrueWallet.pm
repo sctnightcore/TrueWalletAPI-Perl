@@ -1,7 +1,7 @@
 package TrueWallet;
 use strict;
 use warnings;
-use JSON::XS qw( decode_json encode_json);
+use JSON qw( decode_json encode_json);
 use Digest::SHA1 qw(sha1 sha1_hex sha1_base64);
 use HTTP::Tiny;
 use Data::Dumper;
@@ -108,6 +108,7 @@ sub txDetail {
 	}	
 
 }
+
 sub logout {
 	my ($token) = @_;
 	my $response = $http->request( 'POST', "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/api/v1/signout/$token", {
