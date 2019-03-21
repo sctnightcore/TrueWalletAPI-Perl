@@ -30,7 +30,7 @@ sub Login {
 		my $tokenjson = decode_json($response->{content});
 		return $tokenjson->{'data'}->{'accessToken'};		
 	} else {
-		print "Cannot get Token from Truewallet !\n";
+		return 1;
 	}
 }
 
@@ -44,7 +44,7 @@ sub get_Profile {
 		my $profilejson = decode_json($response->{content});
 		return $profilejson->{'data'};		
 	} else {
-		print "Cannot get Profile from Truewallet !\n";
+		return false;
 	}
 }
 
@@ -58,7 +58,7 @@ sub get_Balance {
 		my $balancejson = decode_json($response->{content});
 		return $balancejson->{'data'}->{'currentBalance'};
 	} else {
-		print "Cannot get Balance from Truewallet !\n";
+		return false;
 	}
 }
 sub get_Activity {
@@ -76,7 +76,7 @@ sub get_Activity {
 		my $activity = $activityjson->{'data'}->{'activities'};
 		return $activity;
 	} else {
-		print "Cannot get Activity from Truewallet !\n";
+		return false;
 	}
 
 }
@@ -95,7 +95,7 @@ sub topup_CashCard {
 		my $topuptwjson = decode_json($response->{content});
 		return $topuptwjson->{'data'};
 	} else {
-		print "Cannot use topup in Truewallet !\n";
+		return false;
 	}
 }
 
@@ -112,7 +112,7 @@ sub get_TxDetail {
 		my $txdetailjson = decode_json($response->{content});
 		return $txdetailjson->{'data'};
 	} else {
-		print "Cannot Get txdetail from Truewallet !\n";
+		return false;
 	}	
 
 }
@@ -126,7 +126,7 @@ sub Logout {
 		my $logoutjson = decode_json($response->{content});
 		return $logoutjson->{'data'};		
 	} else {
-		print "Cannot Logout Truewallet !\n";
+		return false;
 	}	
 }
 1;
