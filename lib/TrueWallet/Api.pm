@@ -44,7 +44,7 @@ sub get_Profile {
 		my $profilejson = decode_json($response->{content});
 		return $profilejson->{'data'};		
 	} else {
-		return false;
+		return 1;
 	}
 }
 
@@ -58,7 +58,7 @@ sub get_Balance {
 		my $balancejson = decode_json($response->{content});
 		return $balancejson->{'data'}->{'currentBalance'};
 	} else {
-		return false;
+		return 1;
 	}
 }
 sub get_Activity {
@@ -76,7 +76,7 @@ sub get_Activity {
 		my $activity = $activityjson->{'data'}->{'activities'};
 		return $activity;
 	} else {
-		return false;
+		return 1;
 	}
 
 }
@@ -95,7 +95,7 @@ sub topup_CashCard {
 		my $topuptwjson = decode_json($response->{content});
 		return $topuptwjson->{'data'};
 	} else {
-		return false;
+		return 1;
 	}
 }
 
@@ -112,7 +112,7 @@ sub get_TxDetail {
 		my $txdetailjson = decode_json($response->{content});
 		return $txdetailjson->{'data'};
 	} else {
-		return false;
+		return 1;
 	}	
 
 }
@@ -126,7 +126,7 @@ sub Logout {
 		my $logoutjson = decode_json($response->{content});
 		return $logoutjson->{'data'};		
 	} else {
-		return false;
+		return 1;
 	}	
 }
 1;
